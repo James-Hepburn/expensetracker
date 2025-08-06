@@ -8,12 +8,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int pin;
+    private String pin;
 
     @Column (unique = true)
     private String username;
 
-    public User (String username, int pin) {
+    public User () {
+
+    }
+
+    public User (String username, String pin) {
         this.username = username;
         this.pin = pin;
     }
@@ -21,11 +25,11 @@ public class User {
     public String getUsername () {
         return this.username;
     }
-    public int getPin () {
+    public String getPin () {
         return this.pin;
     }
 
-    public void setPin (int pin) {
+    public void setPin (String pin) {
         this.pin = pin;
     }
 }
