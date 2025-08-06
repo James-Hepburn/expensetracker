@@ -1,10 +1,12 @@
 package com.example.expense.tracker.cli;
 
+import com.example.expense.tracker.model.Expense;
 import com.example.expense.tracker.model.User;
 import com.example.expense.tracker.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -93,6 +95,7 @@ public class CommandRunner implements CommandLineRunner {
         while (true) {
             System.out.println ("\n1. Login as existing user");
             System.out.println ("2. Create a new user");
+            System.out.println ("3. Quit program");
 
             System.out.print ("Please select an option: ");
             int option = input.nextInt ();
@@ -105,6 +108,9 @@ public class CommandRunner implements CommandLineRunner {
             } else if (option == 2) {
                 user = create ();
                 break;
+            } else if (option == 3) {
+              user = null;
+              break;
             } else {
                 System.out.println ("Invalid option.");
             }
@@ -113,14 +119,90 @@ public class CommandRunner implements CommandLineRunner {
         return user;
     }
 
+    public void addExpense (User user) {
+        System.out.print ("\nEnter the expense: ");
+        String description = input.nextLine ();
+        System.out.print ("Enter the amount: ");
+        double amount = input.nextDouble ();
+
+        Expense expense = new Expense (description, amount);
+        user.getExpenseRepo ().save (expense);
+    }
+
+    public void deleteExpense (User user) {
+
+    }
+
+    public void updateExpense (User user) {
+
+    }
+
+    public void viewAllExpenses (User user) {
+        System.out.println ("\nHere are all your expenses:");
+
+        List <Expense> expenses = user.getExpenseRepo ().findAll ();
+
+        for (int i = 0; i < expenses.size (); i++) {
+            System.out.println (expenses.get (i));
+        }
+    }
+
+    public void viewExpensesByAmount (User user) {
+
+    }
+
+    public void viewExpensesByDate (User user) {
+
+    }
+
+    public void trackExpenses (User user) {
+        while (true) {
+            System.out.println ("\n1. Add expense");
+            System.out.println ("2. Delete expense");
+            System.out.println ("3. Update expense");
+            System.out.println ("4. View all expenses");
+            System.out.println ("5. View expenses by amount");
+            System.out.println ("6. View expenses by date");
+            System.out.println ("7. Logout");
+
+            System.out.print ("Please select an option: ");
+            int option = input.nextInt ();
+
+            if (option == 1) {
+                addExpense (user);
+            } else if (option == 2) {
+                deleteExpense (user);
+            } else if (option == 3) {
+                updateExpense (user);
+            } else if (option == 4) {
+                viewAllExpenses (user);
+            } else if (option == 5) {
+                viewExpensesByAmount (user);
+            } else if (option == 6) {
+                viewExpensesByDate (user);
+            } else if (option == 7) {
+                break;
+            } else {
+                System.out.println ("Invalid option");
+            }
+        }
+    }
+
     @Override
     public void run (String... args) {
         System.out.println ("Expense Tracker");
 
-        User user = loginOrCreate ();
-
         while (true) {
+            User user = loginOrCreate ();
 
+            if (user == null) {
+                System.out.println ("Thank you for using the program.");
+                break;
+            } else {
+                trackExpenses (user);
+            }
         }
+
+        System.exit (0);
     }
 }

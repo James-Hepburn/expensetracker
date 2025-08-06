@@ -13,6 +13,10 @@ public class Expense {
     private double amount;
     private LocalDate date;
 
+    public Expense () {
+
+    }
+
     public Expense (String description, double amount) {
         this.description = description;
         this.amount = amount;
