@@ -41,6 +41,7 @@ public class CommandRunner implements CommandLineRunner {
                 System.out.println ("Successful login.");
             } else {
                 System.out.println ("Invalid pin.");
+                user = null;
             }
         } else {
             System.out.println ("Invalid username.");
@@ -65,6 +66,7 @@ public class CommandRunner implements CommandLineRunner {
 
             if (pin.length () != 4) {
                 System.out.println ("Invalid pin length.");
+                return user;
             }
 
             boolean isNumeric = true;
@@ -79,6 +81,7 @@ public class CommandRunner implements CommandLineRunner {
                 System.out.println ("Invalid pin content.");
             } else {
                 user = new User (username, pin);
+                usersRepo.save (user);
                 System.out.println ("Successful registration.");
             }
         }
@@ -123,6 +126,8 @@ public class CommandRunner implements CommandLineRunner {
     }
 
     public void addExpense (User user) {
+        input.nextLine ();
+
         System.out.print ("\nEnter the expense: ");
         String description = input.nextLine ();
         System.out.print ("Enter the amount: ");
@@ -133,6 +138,8 @@ public class CommandRunner implements CommandLineRunner {
     }
 
     public void deleteExpense (User user) {
+        input.nextLine ();
+
         System.out.print ("\nEnter the expense: ");
         String description = input.nextLine ();
 
@@ -189,6 +196,8 @@ public class CommandRunner implements CommandLineRunner {
     }
 
     public void updateExpense (User user) {
+        input.nextLine ();
+
         System.out.print ("\nEnter the expense: ");
         String description = input.nextLine ();
 
