@@ -10,11 +10,11 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List <Expense> findByUser (User user);
 
-    List <Expense> findByDescription (String description, User user);
+    List <Expense> findByDescriptionAndUser (String description, User user);
 
-    List <Expense> findByDateAfter (LocalDate start, User user);                      // for "last X days"
-    List <Expense> findByDateBetween (LocalDate start, LocalDate end, User user);
+    List <Expense> findByDateAfterAndUser (LocalDate start, User user);                      // for "last X days"
+    List <Expense> findByDateBetweenAndUser (LocalDate start, LocalDate end, User user);
 
-    List <Expense> findByAmountAfter (double start, User user);
-    List <Expense> findByAmountBetween (double start, double end, User user);
+    List <Expense> findByAmountAfterAndUser (double start, User user);
+    List <Expense> findByAmountBetweenAndUser (double start, double end, User user);
 }

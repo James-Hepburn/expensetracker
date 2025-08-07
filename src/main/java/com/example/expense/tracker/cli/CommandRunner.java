@@ -137,7 +137,7 @@ public class CommandRunner implements CommandLineRunner {
         System.out.print ("\nEnter the expense: ");
         String description = input.nextLine ();
 
-        List <Expense> expenseList = expenseRepo.findByDescription (description, user);
+        List <Expense> expenseList = expenseRepo.findByDescriptionAndUser (description, user);
 
         if (expenseList.isEmpty ()) {
             System.out.println ("Expense not found.");
@@ -193,7 +193,7 @@ public class CommandRunner implements CommandLineRunner {
         System.out.print ("\nEnter the expense: ");
         String description = input.nextLine ();
 
-        List <Expense> expenseList = expenseRepo.findByDescription (description, user);
+        List <Expense> expenseList = expenseRepo.findByDescriptionAndUser (description, user);
 
         if (expenseList.isEmpty ()) {
             System.out.println ("Expense not found.");
@@ -238,7 +238,7 @@ public class CommandRunner implements CommandLineRunner {
         if (option == 1) {
             System.out.println ("\nHere are all the expenses under $50:");
 
-            List <Expense> expenses = expenseRepo.findByAmountBetween (0, 50.99, user);
+            List <Expense> expenses = expenseRepo.findByAmountBetweenAndUser (0, 50.99, user);
 
             for (int i = 0; i < expenses.size (); i++) {
                 System.out.println (expenses.get (i));
@@ -246,7 +246,7 @@ public class CommandRunner implements CommandLineRunner {
         } else if (option == 2) {
             System.out.println ("\nHere are all the expenses from $51 to $199:");
 
-            List <Expense> expenses = expenseRepo.findByAmountBetween (51, 199.99, user);
+            List <Expense> expenses = expenseRepo.findByAmountBetweenAndUser (51, 199.99, user);
 
             for (int i = 0; i < expenses.size (); i++) {
                 System.out.println (expenses.get (i));
@@ -254,7 +254,7 @@ public class CommandRunner implements CommandLineRunner {
         } else if (option == 3) {
             System.out.println ("\nHere are all the expenses $200 and above:");
 
-            List <Expense> expenses = expenseRepo.findByAmountAfter (200, user);
+            List <Expense> expenses = expenseRepo.findByAmountAfterAndUser (200, user);
 
             for (int i = 0; i < expenses.size (); i++) {
                 System.out.println (expenses.get (i));
@@ -275,7 +275,7 @@ public class CommandRunner implements CommandLineRunner {
         if (option == 1) {
             System.out.println ("\nHere are all the expenses within the last 7 days:");
 
-            List <Expense> expenses = expenseRepo.findByDateBetween (LocalDate.now ().minusDays (7), LocalDate.now (), user);
+            List <Expense> expenses = expenseRepo.findByDateBetweenAndUser (LocalDate.now ().minusDays (7), LocalDate.now (), user);
 
             for (int i = 0; i < expenses.size (); i++) {
                 System.out.println (expenses.get (i));
@@ -283,7 +283,7 @@ public class CommandRunner implements CommandLineRunner {
         } else if (option == 2) {
             System.out.println ("\nHere are all the expenses within the last 30 days:");
 
-            List <Expense> expenses = expenseRepo.findByDateBetween (LocalDate.now ().minusDays (30), LocalDate.now (), user);
+            List <Expense> expenses = expenseRepo.findByDateBetweenAndUser (LocalDate.now ().minusDays (30), LocalDate.now (), user);
 
             for (int i = 0; i < expenses.size (); i++) {
                 System.out.println (expenses.get (i));
