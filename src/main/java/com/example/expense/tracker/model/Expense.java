@@ -12,14 +12,16 @@ public class Expense {
     private String description;
     private double amount;
     private LocalDate date;
+    private User user;
 
     public Expense () {
 
     }
 
-    public Expense (String description, double amount) {
+    public Expense (String description, double amount, User user) {
         this.description = description;
         this.amount = amount;
+        this.user = user;
         this.date = LocalDate.now ();
     }
 
