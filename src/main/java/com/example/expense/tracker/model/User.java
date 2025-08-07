@@ -3,6 +3,7 @@ package com.example.expense.tracker.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table (name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
