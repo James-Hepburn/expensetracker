@@ -6,6 +6,7 @@ import com.example.expense.tracker.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -23,7 +24,7 @@ public class CommandRunner implements CommandLineRunner {
         User user;
 
         while (true) {
-            System.out.print ("\nPlease enter your username: ");
+            System.out.print ("\nEnter your username: ");
             String username = input.nextLine ();
 
             Optional <User> userOptional = usersRepo.findByUsername (username);
@@ -31,7 +32,7 @@ public class CommandRunner implements CommandLineRunner {
             if (userOptional.isPresent ()) {
                 user = userOptional.get ();
 
-                System.out.print ("Please enter your pin: ");
+                System.out.print ("Enter your pin: ");
                 String pin = input.nextLine ();
 
                 if (user.getPin ().equals (pin)) {
@@ -52,7 +53,7 @@ public class CommandRunner implements CommandLineRunner {
         User user;
 
         while (true) {
-            System.out.print ("\nPlease enter your new username: ");
+            System.out.print ("\nEnter your new username: ");
             String username = input.nextLine ();
 
             Optional <User> userOptional = usersRepo.findByUsername (username);
@@ -60,7 +61,7 @@ public class CommandRunner implements CommandLineRunner {
             if (userOptional.isPresent ()) {
                 System.out.println ("User already exists.");
             } else {
-                System.out.print ("Please enter your new (4-digit) pin: ");
+                System.out.print ("Enter your new (4-digit) pin: ");
                 String pin = input.nextLine ();
 
                 if (pin.length () != 4) {
@@ -97,7 +98,7 @@ public class CommandRunner implements CommandLineRunner {
             System.out.println ("2. Create a new user");
             System.out.println ("3. Quit program");
 
-            System.out.print ("Please select an option: ");
+            System.out.print ("Select an option: ");
             int option = input.nextInt ();
 
             input.nextLine ();
@@ -130,11 +131,87 @@ public class CommandRunner implements CommandLineRunner {
     }
 
     public void deleteExpense (User user) {
+        System.out.print ("\nEnter the expense: ");
+        String description = input.nextLine ();
 
+        List <Expense> expenseList = user.getExpenseRepo ().findByDescription (description);
+
+        if (expenseList.isEmpty ()) {
+            System.out.println ("Expense not found.");
+        } else if (expenseList.size () == 1) {
+            user.getExpenseRepo ().delete (expenseList.get (0));
+            System.out.println ("Expense successfully deleted.");
+        } else {
+            System.out.println ("\nHere are all the matching expenses:");
+
+            for (int i = 0; i < expenseList.size (); i++) {
+                System.out.println (i + 1 + ". " + expenseList.get (i));
+            }
+
+            System.out.print ("Enter an expense to delete: ");
+            int option = input.nextInt ();
+
+            if (option >= 1 && option <= expenseList.size ()) {
+                user.getExpenseRepo ().delete (expenseList.get (option - 1));
+                System.out.println ("Expense successfully deleted.");
+            } else {
+                System.out.println ("Invalid option.");
+            }
+        }
+    }
+
+    public void updateExpenseHelper (User user, Expense expense) {
+        System.out.println ("\n1. Update description");
+        System.out.println ("2. Update amount");
+
+        System.out.print ("Enter an option: ");
+        int option = input.nextInt ();
+
+        if (option == 1) {
+            input.nextLine ();
+
+            System.out.print ("Enter the new description: ");
+            String description = input.nextLine ();
+
+            expense.setDescription (description);
+            user.getExpenseRepo ().save (expense);
+        } else if (option == 2) {
+            System.out.print ("Enter the new amount: ");
+            double amount = input.nextDouble ();
+
+            expense.setAmount (amount);
+            user.getExpenseRepo ().save (expense);
+        } else {
+            System.out.println ("Invalid option.");
+        }
     }
 
     public void updateExpense (User user) {
+        System.out.print ("\nEnter the expense: ");
+        String description = input.nextLine ();
 
+        List <Expense> expenseList = user.getExpenseRepo ().findByDescription (description);
+
+        if (expenseList.isEmpty ()) {
+            System.out.println ("Expense not found.");
+        } else if (expenseList.size () == 1) {
+            updateExpenseHelper (user, expenseList.get (0));
+        } else {
+            System.out.println ("\nHere are all the matching expenses:");
+
+            for (int i = 0; i < expenseList.size (); i++) {
+                System.out.println (i + 1 + ". " + expenseList.get (i));
+            }
+
+            System.out.print ("Enter an expense to update: ");
+            int option = input.nextInt ();
+
+            if (option >= 1 && option <= expenseList.size ()) {
+                updateExpenseHelper (user, expenseList.get (option - 1));
+            } else {
+                System.out.println ("Invalid option.");
+            }
+        }
     }
 
     public void viewAllExpenses (User user) {
@@ -148,11 +225,77 @@ public class CommandRunner implements CommandLineRunner {
     }
 
     public void viewExpensesByAmount (User user) {
+        System.out.println ("\n1. Under $50");
+        System.out.println ("2. $51 to $199");
+        System.out.println ("3. $200 and above");
 
+        System.out.print ("Enter an option: ");
+        int option = input.nextInt ();
+
+        if (option == 1) {
+            System.out.println ("\nHere are all the expenses under $50:");
+
+            List <Expense> expenses = user.getExpenseRepo ().findByAmountBetween (0, 50.99);
+
+            for (int i = 0; i < expenses.size (); i++) {
+                System.out.println (expenses.get (i));
+            }
+        } else if (option == 2) {
+            System.out.println ("\nHere are all the expenses from $51 to $199:");
+
+            List <Expense> expenses = user.getExpenseRepo ().findByAmountBetween (51, 199.99);
+
+            for (int i = 0; i < expenses.size (); i++) {
+                System.out.println (expenses.get (i));
+            }
+        } else if (option == 3) {
+            System.out.println ("\nHere are all the expenses $200 and above:");
+
+            List <Expense> expenses = user.getExpenseRepo ().findByAmountAfter (200);
+
+            for (int i = 0; i < expenses.size (); i++) {
+                System.out.println (expenses.get (i));
+            }
+        } else {
+            System.out.println ("Invalid option.");
+        }
     }
 
     public void viewExpensesByDate (User user) {
+        System.out.println ("\n1. Last 7 days");
+        System.out.println ("2. Last 30 days");
+        System.out.println ("3. All time");
 
+        System.out.print ("Enter an option: ");
+        int option = input.nextInt ();
+
+        if (option == 1) {
+            System.out.println ("\nHere are all the expenses within the last 7 days:");
+
+            List <Expense> expenses = user.getExpenseRepo ().findByDateBetween (LocalDate.now ().minusDays (7), LocalDate.now ());
+
+            for (int i = 0; i < expenses.size (); i++) {
+                System.out.println (expenses.get (i));
+            }
+        } else if (option == 2) {
+            System.out.println ("\nHere are all the expenses within the last 30 days:");
+
+            List <Expense> expenses = user.getExpenseRepo ().findByDateBetween (LocalDate.now ().minusDays (30), LocalDate.now ());
+
+            for (int i = 0; i < expenses.size (); i++) {
+                System.out.println (expenses.get (i));
+            }
+        } else if (option == 3) {
+            System.out.println ("\nHere are all the expenses within all time:");
+
+            List <Expense> expenses = user.getExpenseRepo ().findAll ();
+
+            for (int i = 0; i < expenses.size (); i++) {
+                System.out.println (expenses.get (i));
+            }
+        } else {
+            System.out.println ("Invalid option.");
+        }
     }
 
     public void trackExpenses (User user) {
@@ -165,7 +308,7 @@ public class CommandRunner implements CommandLineRunner {
             System.out.println ("6. View expenses by date");
             System.out.println ("7. Logout");
 
-            System.out.print ("Please select an option: ");
+            System.out.print ("Select an option: ");
             int option = input.nextInt ();
 
             if (option == 1) {
